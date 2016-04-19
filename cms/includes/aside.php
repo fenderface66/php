@@ -37,13 +37,13 @@
         <div class="row">
             <div class="col-lg-12">
                 <ul class="list-unstyled">
-                   <?php
+                  <!--  <?php
                     while($row = mysqli_fetch_assoc($select_categories_sidebar)) {
                     $cat_title = $row['cat_title']; 
-
+                   
                     echo "<li><a href='#'>{$cat_title}</a></li>";
                     }
-                    ?>
+                    ?> -->
                 </ul>
             </div>
             <!-- /.col-lg-6 -->
