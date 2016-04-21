@@ -39,7 +39,7 @@ if (isset($_POST['edit_post'])) {
   $post_comment_count = 4;
 
   move_uploaded_file($post_image_temp, "../images/$post_image" );
-  
+
   if (empty($post_image)) {
     $query = "SELECT * FROM posts WHERE post_id = $post_id ";
     $select_image = mysqli_query($connection, $query);
@@ -47,7 +47,7 @@ if (isset($_POST['edit_post'])) {
       $post_image = $row['post_image'];
     }
   }
-  
+
   $query = "UPDATE posts SET ";
   $query .= "post_title = '{$post_title}', ";
   $query .= "post_category_id = '{$post_category}', " ;
@@ -58,10 +58,10 @@ if (isset($_POST['edit_post'])) {
   $query .= "post_content = '{$post_content}', ";
   $query .= "post_image = '{$post_image}' ";
   $query .= "WHERE post_id = {$post_id} ";
-  
+
   $edit_post_query = mysqli_query($connection, $query);
   confirm($edit_post_query);
-  
+
 }
 
 ?>
@@ -84,7 +84,7 @@ if (isset($_POST['edit_post'])) {
       while($row = mysqli_fetch_assoc($select_categories)) {
         $cat_id = $row['cat_id']; 
         $cat_title = $row['cat_title']; 
-        
+
         echo "<option value='$cat_id'>{$cat_title}</option>";
       }
       ?>
@@ -97,24 +97,43 @@ if (isset($_POST['edit_post'])) {
   </div>
   <div class="form-group">
     <label for="post_status">Post Status</label>
-    <input value="<?php echo $post_status; ?>" name="post_status" class="form-control" type="text">
+    <select name="post_status">
+      <?php 
+
+      $query = "SELECT * FROM posts WHERE post_id = $post_id";
+      $select_status = mysqli_query($connection, $query);
+      while($row = mysqli_fetch_assoc($select_status)) {
+        $post_status = $row['post_status'];
+        
+        if ($post_status == 'Published') {
+          echo "<option value='$post_status'>{$post_status}</option>";
+          echo "<option value='Draft'>Draft</option>";
+        } else {
+          echo "<option value='$post_status'>{$post_status}</option>";
+          echo "<option value='Published'>Published</option>";
+        }
+
+      }
+      ?>
+
+    </select>
   </div>
   <div class="form-group">
     <img width="100" src="../images/<?php echo $post_image ?>"/> 
     <input name="post_image" class="form-control" type="file">
   </div>
-    <div class="form-group">
-      <label for="post_content">Post Content</label>
-      <textarea name="post_content" rows="10" class="form-control" type="text">
-        <?php echo $post_content; ?>
-      </textarea>
-    </div>
-    <div class="form-group">
-      <label for="post_tags">Post Tags</label>
-      <input value="<?php echo $post_tags; ?>" name="post_tags" class="form-control" type="text">
-    </div>
+  <div class="form-group">
+    <label for="post_content">Post Content</label>
+    <textarea name="post_content" rows="10" class="form-control" type="text">
+      <?php echo $post_content; ?>
+    </textarea>
+  </div>
+  <div class="form-group">
+    <label for="post_tags">Post Tags</label>
+    <input value="<?php echo $post_tags; ?>" name="post_tags" class="form-control" type="text">
+  </div>
 
-    <div class="form-group">
-      <input type="submit" class="btn btn-primary" name="edit_post" value="Edit Post">
-    </div>
-    </form>
+  <div class="form-group">
+    <input type="submit" class="btn btn-primary" name="edit_post" value="Edit Post">
+  </div>
+</form>

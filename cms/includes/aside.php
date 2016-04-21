@@ -26,9 +26,8 @@
     <div class="well">
 
         <?php 
-        $query = "SELECT * FROM categories LIMIT 3";
+        $query = "SELECT * FROM categories";
         $select_categories_sidebar = mysqli_query($connection, $query);
-
         ?>
 
 
@@ -37,13 +36,14 @@
         <div class="row">
             <div class="col-lg-12">
                 <ul class="list-unstyled">
-                  <!--  <?php
+                  <?php
                     while($row = mysqli_fetch_assoc($select_categories_sidebar)) {
                     $cat_title = $row['cat_title']; 
+                    $cat_id = $row['cat_id'];   
                    
-                    echo "<li><a href='#'>{$cat_title}</a></li>";
+                    echo "<li><a href='category.php?category={$cat_id}'>{$cat_title}</a></li>";
                     }
-                    ?> -->
+                    ?> 
                 </ul>
             </div>
             <!-- /.col-lg-6 -->

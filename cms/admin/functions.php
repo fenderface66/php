@@ -17,7 +17,7 @@ function add_post() {
 
   if (isset($_POST['create_post'])) {
     $post_title = $_POST['post_title'];
-    $post_cat_id = $_POST['post_cat_id'];
+    $post_cat_id = $_POST['post_category'];
     $post_author = $_POST['post_author'];
     $post_status = $_POST['post_status'];
 
@@ -108,20 +108,19 @@ function find_posts() {
 
     echo "<tr>";
     echo "<td>{$post_id}</td>";
-    
+
     $query = "SELECT * FROM categories WHERE cat_id = $post_cat_id ";
     $select_categories_id = mysqli_query($connection, $query);
     confirm($select_categories_id);
     while($row = mysqli_fetch_assoc($select_categories_id)) {
       $cat_id = $row['cat_id'];
       $cat_title = $row['cat_title'];
-      
+
       echo "<td>{$cat_title}</td>";
     }
-    
-    
-    
-    
+
+
+
     echo "<td>{$post_title}</td>";
     echo "<td>{$post_author}</td>";
     echo "<td>{$post_status}</td>";
@@ -145,6 +144,76 @@ function find_posts() {
   }
 }
 
+//Find all comments
+function find_comments() {
+  global $connection;
+
+  $query = "SELECT * FROM comments";
+  $select_comments = mysqli_query($connection, $query);
+
+  while($row = mysqli_fetch_assoc($select_comments)) {
+
+    $comment_id = $row['comment_id']; 
+    $comment_post_id = $row['comment_post_id']; 
+    $comment_email = $row['comment_email']; 
+    $comment_author = $row['comment_author']; 
+    $comment_status = $row['comment_status'];
+    $comment_content = substr($row['comment_content'], 0, 100); 
+    $comment_date = $row['comment_date'];   
+
+    echo "<tr>";
+    echo "<td>{$comment_id}</td>";
+    echo "<td>{$comment_author}</td>";
+    echo "<td>{$comment_content}</td>";
+    echo "<td>{$comment_email}</td>";
+    echo "<td>{$comment_status}</td>";
+    echo "<td>{$comment_date}</td>";
+    $query = "SELECT * FROM posts WHERE post_id = {$comment_post_id}"; 
+    $select_post = mysqli_query($connection, $query);
+
+    while ($row = mysqli_fetch_assoc($select_post)) {
+      $post_title = $row['post_title'];
+      echo "<td>{$post_title}</td>";
+    }
+    echo "<td><a href='comments.php?c_id={$comment_id}&approved=1'>Approve</td>";
+    echo "<td><a href='comments.php?c_id={$comment_id}&approved=0'>Unapprove</td>";
+    echo "<td><a href='comments.php?delete={$comment_id}'>Delete</td>";
+    echo "</tr>";  
+
+  }
+
+  if(isset($_GET['delete'])) {
+    $comment_id = $_GET['delete'];
+    $query = "DELETE FROM comments WHERE comment_id = {$comment_id} ";
+
+    $delete_query = mysqli_query($connection, $query);
+    confirm($delete_query);
+    header("Location: comments.php?source=view_all_comments");
+  }
+
+}
+
+function set_approval() {
+  global $connection;
+  if(isset($_GET['approved'])) {
+    $approval = $_GET['approved'];
+    $comment_id = $_GET['c_id'];
+    if ($approval == 1) {
+      $approval = "Approved";
+      $query = "UPDATE comments SET comment_status = '$approval' WHERE comment_id = $comment_id";
+      $status_query = mysqli_query($connection, $query);
+      confirm($status_query);
+    } else if ($approval == 0) {
+      $disapproval = "Unapproved";
+      $query = "UPDATE comments SET comment_status = '$disapproval' WHERE comment_id = $comment_id";
+      $status_query = mysqli_query($connection, $query);
+      confirm($status_query);
+    }
+
+    header("Location: comments.php?source=view_all_comments");
+  }
+}
+
 //Edit posts
 
 function edit_post() {
@@ -158,7 +227,7 @@ function edit_post() {
   $select_posts_by_id = mysqli_query($connection, $query);
 
   while($row = mysqli_fetch_assoc($select_posts_by_id)) {
-    
+
     $post_id = $row['post_id']; 
     $post_cat_id = $row['post_category_id']; 
     $post_title = $row['post_title']; 
