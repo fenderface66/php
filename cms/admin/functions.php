@@ -44,6 +44,37 @@ function add_post() {
   }
 }
 
+function add_user() {
+  global $connection;
+
+  if (isset($_POST['create_user'])) {
+    $username = $_POST['username'];
+    $user_password = $_POST['user_password'];
+    $user_firstname = $_POST['user_firstname'];
+    $user_lastname = $_POST['user_lastname'];
+
+    $user_image = $_FILES['user_image']['name'];
+    $user_image_temp = $_FILES['user_image']['tmp_name'];
+
+    $user_email = $_POST['user_email'];
+    $user_role = $_POST['user_role'];
+
+
+    move_uploaded_file($user_image_temp, "../images/$user_image" );
+
+
+    $query = 
+      "INSERT INTO users(username, user_password, user_firstname, user_lastname, user_image, user_email, user_role) ";
+    $query .= 
+      "VALUES('{$username}','{$user_password}','{$user_firstname}','{$user_lastname}','{$user_image}','{$user_email}', '{$user_role}' ) ";
+
+    $create_user_query = mysqli_query($connection, $query);
+
+    confirm($create_user_query);
+    header("Location: users.php?source=view_all_users");
+  }
+}
+
 
 //Add category query
 function insert_categories() {
@@ -189,6 +220,50 @@ function find_comments() {
     $delete_query = mysqli_query($connection, $query);
     confirm($delete_query);
     header("Location: comments.php?source=view_all_comments");
+  }
+
+}
+
+//Find all Users
+function find_users() {
+  global $connection;
+
+  $query = "SELECT * FROM users";
+  $select_users = mysqli_query($connection, $query);
+  confirm($select_users);
+  while($row = mysqli_fetch_assoc($select_users)) {
+
+    $user_id = $row['user_id']; 
+    $username = $row['username']; 
+    $user_password = $row['user_password']; 
+    $user_firstname = $row['user_firstname']; 
+    $user_lastname = $row['user_lastname'];
+    $user_image = $row['user_image']; 
+    $user_email = $row['user_email']; 
+    $user_role = $row['user_role']; 
+
+    echo "<tr>";
+    echo "<td>{$user_id}</td>";
+    echo "<td>{$username}</td>";
+    echo "<td>{$user_password}</td>";
+    echo "<td>{$user_firstname}</td>";
+    echo "<td>{$user_lastname}</td>";
+    echo "<td><img width='100px' src='../images/$user_image' alt='image'></td>";
+    echo "<td>{$user_email}</td>";
+    echo "<td>{$user_role}</td>";
+    echo "<td><a href='users.php?source=edit_user&u_id={$user_id}'>Edit</td>";
+    echo "<td><a href='users.php?source=view_all_users&delete={$user_id}'>Delete</td>";
+    echo "</tr>";  
+
+  }
+
+  if(isset($_GET['delete'])) {
+    $comment_id = $_GET['delete'];
+    $query = "DELETE FROM users WHERE user_id = {$user_id} ";
+
+    $delete_query = mysqli_query($connection, $query);
+    confirm($delete_query);
+    header("Location: users.php?source=view_all_users");
   }
 
 }

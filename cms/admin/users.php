@@ -14,7 +14,7 @@
         <div class="col-lg-12">
           <h1 class="page-header">
             Welcome to Admin
-            <small>Author Name</small>
+            <small><?php $_SESSION['username']; ?></small>
           </h1>
           <?php 
 
@@ -24,28 +24,34 @@
 
     $source = '';
 
-
   }
 
 
-switch($source) {
-  case 'add_post';
-    include "includes/add_post.php";
-    break;
+if ($_SESSION['role'] !== 'admin') {
 
-  case 'view_all_comments';
-    include "includes/view_all_comments.php";
-    break;
-    
+  switch($source) {
+    case 'add_user';
+      include "includes/add_user.php";
+      break;
 
-  case '';
-    include "includes/view_all_comments.php";
-    break;
+    case 'view_all_users';
+      include "includes/view_all_users.php";
+      break;
 
-  default: 
-    break;
+    case 'edit_user';
+      include "includes/edit_user.php";
+      break;
+
+    default: 
+
+
+      break;
+  }
+
+} else {
+  echo "<h1>Users Area for Admins Only</h1>";
 }
-?>
+          ?>
 
 
         </div>
