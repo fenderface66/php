@@ -28,6 +28,7 @@ if (isset($_POST['login'])) {
     header("Location: ../index.php?login=failed");
     
   } else if ($username == $db_username && $password == $db_password) {
+    $_SESSION['user_id'] = $db_user_id;
     $_SESSION['username'] = $db_username;
     $_SESSION['firstname'] = $db_user_firstname;
     $_SESSION['lastname'] = $db_user_lastname;

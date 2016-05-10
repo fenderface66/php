@@ -17,11 +17,12 @@
             <small><?php $_SESSION['username']; ?></small>
           </h1>
           <?php 
-          if (isset($_SESSION['username'])) {
+          if (isset($_SESSION['user_id'])) {
             $username = $_SESSION['username'];
-            $query = "SELECT * FROM users WHERE username = $username";
+            $user_id = $_SESSION['user_id'];
+            $query = "SELECT * FROM users WHERE username = '{$username}'";
             $select_users_by_name = mysqli_query($connection, $query);
-
+            confirm($select_users_by_name);
             while($row = mysqli_fetch_assoc($select_users_by_name)) {
 
               $user_id = $row['user_id']; 
@@ -32,8 +33,45 @@
               $user_image = $row['user_image']; 
               $user_email = $row['user_email']; 
               $user_role = $row['user_role']; 
-
             }
+          }
+
+          if (isset($_POST['update_profile'])) {
+            $username = $_POST['username'];
+            $user_password = $_POST['user_password'];
+            $user_firstname = $_POST['user_firstname'];
+            $user_lastname = $_POST['user_lastname'];
+
+            $user_image = $_FILES['user_image']['name'];
+            $user_image_temp = $_FILES['user_image']['tmp_name'];
+
+            $user_email = $_POST['user_email'];
+            $user_role = $_POST['user_role'];
+
+
+            move_uploaded_file($user_image_temp, "../images/$user_image" );
+
+            if (empty($user_image)) {
+              $query = "SELECT * FROM users WHERE user_id = $user_id ";
+              $select_image = mysqli_query($connection, $query);
+              while ($row = mysqli_fetch_array($select_image)) {
+                $user_image = $row['user_image'];
+              }
+            }
+
+            $query = "UPDATE users SET ";
+            $query .= "username = '{$username}', ";
+            $query .= "user_password = '{$user_password}', " ;
+            $query .= "user_firstname = '{$user_firstname}', ";
+            $query .= "user_lastname = '{$user_lastname}', ";
+            $query .= "user_image = '{$user_image}', ";
+            $query .= "user_email = '{$user_email}', ";
+            $query .= "user_role = '{$user_role}' ";
+            $query .= "WHERE user_id = {$user_id} ";
+
+            $edit_profile_query = mysqli_query($connection, $query);
+            confirm($edit_profile_query);
+            header("Location: profile.php");
           }
 
           ?>
@@ -88,7 +126,7 @@
             </div>
 
             <div class="form-group">
-              <input type="submit" class="btn btn-primary" name="edit_user" value="Edit User">
+              <input type="submit" class="btn btn-primary" name="update_profile" value="Update Profile">
             </div>
           </form>
 
