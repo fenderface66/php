@@ -31,12 +31,12 @@
                   <i class="fa fa-file-text fa-5x"></i>
                 </div>
                 <div class="col-xs-9 text-right">
-                 <?php 
+                  <?php 
                   $query = "SELECT * FROM posts";
                   $select_all_posts = mysqli_query($connection, $query);
                   $post_counts = mysqli_num_rows($select_all_posts);
-                  
-                  
+
+
                   ?>
                   <div class='huge'><?php echo $post_counts ?></div>
                   <div>Posts</div>
@@ -60,12 +60,12 @@
                   <i class="fa fa-comments fa-5x"></i>
                 </div>
                 <div class="col-xs-9 text-right">
-                 <?php 
-                  $query = "SELECT * FROM comments";
-                  $select_all_comments = mysqli_query($connection, $query);
-                  $comment_counts = mysqli_num_rows($select_all_comments);
-                  
-                  
+                  <?php 
+  $query = "SELECT * FROM comments";
+                    $select_all_comments = mysqli_query($connection, $query);
+                    $comment_counts = mysqli_num_rows($select_all_comments);
+
+
                   ?>
                   <div class='huge'><?php echo $comment_counts ?></div>
                   <div>Comments</div>
@@ -89,19 +89,19 @@
                   <i class="fa fa-user fa-5x"></i>
                 </div>
                 <div class="col-xs-9 text-right">
-                 <?php 
-                  $query = "SELECT * FROM users";
-                  $select_all_users = mysqli_query($connection, $query);
-                  $user_counts = mysqli_num_rows($select_all_users);
-                  
-                  
+                  <?php 
+  $query = "SELECT * FROM users";
+                    $select_all_users = mysqli_query($connection, $query);
+                    $user_counts = mysqli_num_rows($select_all_users);
+
+
                   ?>
                   <div class='huge'><?php echo $user_counts ?></div>
                   <div> Users</div>
                 </div>
               </div>
             </div>
-            <a href="users.php">
+            <a href="users.php?source=view_all_users">
               <div class="panel-footer">
                 <span class="pull-left">View Details</span>
                 <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
@@ -118,12 +118,12 @@
                   <i class="fa fa-list fa-5x"></i>
                 </div>
                 <div class="col-xs-9 text-right">
-                 <?php 
-                  $query = "SELECT * FROM categories";
-                  $select_all_cat = mysqli_query($connection, $query);
-                  $cat_counts = mysqli_num_rows($select_all_cat);
-                  
-                  
+                  <?php 
+  $query = "SELECT * FROM categories";
+                    $select_all_cat = mysqli_query($connection, $query);
+                    $cat_counts = mysqli_num_rows($select_all_cat);
+
+
                   ?>
                   <div class='huge'><?php echo $cat_counts ?></div>
                   <div>Categories</div>
@@ -141,6 +141,31 @@
         </div>
       </div>
       <!-- /.row -->
+      <div class="row">
+        <script type="text/javascript">
+          google.charts.load('current', {'packages':['bar']});
+          google.charts.setOnLoadCallback(drawChart);
+          function drawChart() {
+            var data = google.visualization.arrayToDataTable([
+              ['Information', 'Posts', 'Comments', 'Users', 'Categories'],
+              [' ', <?php echo $post_counts ?>, <?php echo $comment_counts ?>, <?php echo $user_counts ?>, <?php echo $cat_counts ?>]
+
+            ]);
+
+            var options = {
+              chart: {
+                title: 'Site Statistics'
+
+              }
+            };
+
+            var chart = new google.charts.Bar(document.getElementById('columnchart_material'));
+
+            chart.draw(data, options);
+          }
+        </script>
+        <div id="columnchart_material" style="width: 900px; height 500px;"></div>
+      </div>
     </div>
     <!-- /.container-fluid -->
 

@@ -44,7 +44,7 @@
       <img class="img-responsive" src="images/<?php echo $post_image ?>" alt="">
       <hr>
       <p><?php echo $post_content ?></p>
-      <a class="btn btn-primary" href="#">Read More <span class="glyphicon glyphicon-chevron-right"></span></a>
+
 
       <hr>
 
@@ -55,29 +55,38 @@
       <?php 
 
       if (isset($_POST['create_comment'])) {
-
         $post_id = $_GET['p_id'];
         $comment_author = $_POST['comment_author'];
         $comment_email = $_POST['comment_email'];
         $comment_content = mysqli_escape_string($connection, $_POST['comment_content']);
+        if(!empty($comment_author) && !empty($comment_email) && !empty($comment_content)) {
 
+          $query = 
+            "INSERT INTO comments(comment_post_id, comment_author, comment_email, comment_content, comment_status, comment_date) ";
+          $query .= 
+            "VALUES($post_id, '{$comment_author}','{$comment_email}', '{$comment_content}', 'Unapproved', now()) ";
 
-        $query = 
-          "INSERT INTO comments(comment_post_id, comment_author, comment_email, comment_content, comment_status, comment_date) ";
-        $query .= 
-          "VALUES($post_id, '{$comment_author}','{$comment_email}', '{$comment_content}', 'Unapproved', now()) ";
+          $post_comment = mysqli_query($connection, $query);
+          header ("Location: includes/post_comment.php?p_id=$post_id");
+          if (!$post_comment) {
+            die("Error" . mysqli_error($connection));
+          }
 
-        $post_comment = mysqli_query($connection, $query);
-        header ("Location: includes/post_comment.php?p_id=$post_id");
-        if (!$post_comment) {
-          die("Error" . mysqli_error($connection));
+          $query = "UPDATE posts SET post_comment_count = post_comment_count + 1 WHERE post_id = $post_id ";
+          $post_comment_count_query = mysqli_query($connection, $query);
+          if (!$post_comment_count_query) {
+            die("Error" . mysqli_error($connection));
+          }
+        } else {
+          echo "<script>alert('Fields cannot be empty')</script>";
         }
-        
-        $query = "UPDATE posts SET post_comment_count = post_comment_count + 1 WHERE post_id = $post_id ";
-        $post_comment_count_query = mysqli_query($connection, $query);
-        if (!$post_comment_count_query) {
-          die("Error" . mysqli_error($connection));
-        }
+
+
+
+
+
+
+
       }
       ?>
 
@@ -107,7 +116,7 @@
       <!-- Posted Comments -->
 
       <!-- Comment -->
-<?php 
+      <?php 
 
   if (isset($_GET['p_id'])) {
     $post_id = $_GET['p_id'];
@@ -121,7 +130,7 @@
       $comment_email = $row['comment_email'];
 
 
-?>
+      ?>
 
       <div class="media">
         <a class="pull-left" href="#">

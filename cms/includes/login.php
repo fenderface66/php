@@ -22,6 +22,8 @@ if (isset($_POST['login'])) {
     $db_user_lastname = $row['user_lastname'];
     $db_user_role = $row['user_role'];
   }
+  
+  $password = crypt($password, $db_password);
 
   if ($username !== $db_username && $password !== $db_password) {
 
@@ -35,13 +37,7 @@ if (isset($_POST['login'])) {
     $_SESSION['role'] = $db_user_role;
     header("Location: ../admin/index.php?u_id={$db_user_id}");
     
-  } else {
-    
-    echo $username;
-    echo $password;
-   
-    header("Location: ../index.php");
-  }
+  } 
 }
 
 ?>
