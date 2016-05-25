@@ -14,9 +14,17 @@
 
   if (isset($_GET['p_id'])) {
     $post_id = $_GET['p_id'];
+  
+    $view_query = "UPDATE posts SET post_views_count = post_views_count + 1 WHERE post_id = $post_id";
+    $send_query = mysqli_query($connection, $view_query);
+    
+    if (!$send_query) {
+      die("query failed" . mysqli_error($connection));
+    }
+      
     $query = "SELECT * FROM posts WHERE post_id = $post_id ";
     $select_all_posts_query = mysqli_query($connection, $query);
-
+    
     while($row = mysqli_fetch_assoc($select_all_posts_query)) {
       $post_title = $row['post_title']; 
       $post_author = $row['post_author']; 
@@ -48,7 +56,10 @@
 
       <hr>
 
-      <?php }} ?>
+      <?php }} else {
+      header("Location: index.php");
+      
+    }?>
 
       <!-- Blog Comments -->
 

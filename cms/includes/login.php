@@ -4,7 +4,6 @@
 <?php
 
 if (isset($_POST['login'])) {
-
   $username = mysqli_real_escape_string($connection, $_POST['username']);
   $password = mysqli_real_escape_string($connection, $_POST['password']);
 
@@ -22,7 +21,6 @@ if (isset($_POST['login'])) {
     $db_user_lastname = $row['user_lastname'];
     $db_user_role = $row['user_role'];
   }
-  
   $password = crypt($password, $db_password);
 
   if ($username !== $db_username && $password !== $db_password) {
